@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -42,7 +41,6 @@ class RepoSave
 
     internal bool Export()
     {
-        // export dialog winform
         var saveFileDialog = new SaveFileDialog()
         {
             Filter = "Repo World/save files (*.repoworld)|*.repoworld",

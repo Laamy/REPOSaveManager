@@ -1,12 +1,11 @@
-﻿using System;
+﻿namespace REPOSaveManager;
+#nullable enable
+
+using System;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using Microsoft.Win32;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace REPOSaveManager;
-#nullable enable
+using Microsoft.Win32;
 
 class ExtensionBridge
 {
