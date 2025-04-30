@@ -16,6 +16,7 @@ class Program
         }
     }
 
+    //TODO: move to their own files or smth & an export function
     static void HandleCommand(string command, int index)
     {
         var saves = RepoBridge.GetSaves();
@@ -33,6 +34,9 @@ class Program
                 var newSave = save.Clone();
                 Console.WriteLine($"Soft clone saved to {newSave.saveFileName}");
                 break;
+            case "export":
+                save.Export();
+                break;
             case "delete":
                 save.Destroy();
                 Console.WriteLine($"Destroyed save {save.saveFileName}");
@@ -43,8 +47,26 @@ class Program
         }
     }
 
+    [STAThread]
     static void Main(string[] args)
     {
+        if (ExtensionBridge.LaunchedWithExtension())
+        {
+            var file = ExtensionBridge.GetLaunchedFile();
+            if (file == null || !file.Exists)
+            {
+                Console.WriteLine($"File at '{file.FullName}' not found.");
+                Console.ReadKey();
+                return;
+            }
+
+            ExtensionBridge.HandleNewWorld(file);
+            Console.ReadKey();
+            return;
+        }
+
+        ExtensionBridge.RegisterExtension();
+
         while (true)
         {
             ShowSaves();
@@ -60,7 +82,7 @@ class Program
             }
 
             HandleCommand(parts[0], value);
-            Console.ReadKey();
+            Console.Clear();
         }
     }
 }

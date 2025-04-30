@@ -37,12 +37,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="Engine\ExtensionBridge.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RepoBridge.cs" />
+    <Compile Include="Engine\RepoBridge.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
