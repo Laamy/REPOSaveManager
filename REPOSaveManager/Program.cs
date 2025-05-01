@@ -1,6 +1,8 @@
 ﻿namespace REPOSaveManager;
 
 using System;
+using System.Reflection;
+using System.Windows.Forms;
 
 class Program
 {
@@ -12,7 +14,8 @@ class Program
         for (int i = 0; i < saves.Count; ++i)
         {
             var save = saves[i];
-            Console.WriteLine($"{i}: {save.saveFileName}"); // TODO: have GetSave also return gameplay info like currency and level completions from the base es3 file
+            var info = save.FetchInfo(); // TimeSpan.FromHours(info.level).ToString(@"hh\:mm\:ss")
+            Console.WriteLine($"{i}: lvl{info.level}, ${info.currency}k/{info.totalHaul}k - {save.saveFileName}"); // TODO: have GetSave also return gameplay info like currency and level completions from the base es3 file
         }
     }
 

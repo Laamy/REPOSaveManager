@@ -12,6 +12,11 @@ class RepoSave
     public string saveFileName = "REPO_SAVE_xxxx_xx_xx_xx_xx_xx";
     public DirectoryInfo saveDir;
 
+    public RepoSaveInfo FetchInfo()
+    {
+        return SaveReader.ReadSave(this);
+    }
+
     public static RepoSave Create(string zipName)
     {
         var newSave = "REPO_SAVE_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss") + "_clone1";
