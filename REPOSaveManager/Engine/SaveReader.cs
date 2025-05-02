@@ -19,6 +19,32 @@ class SaveReader
 {
     private static string EncryptionKey = "Why would you want to cheat?... :o It's no fun. :') :'D";
 
+    private static byte[] Encrypt(string content, string password)
+    {
+        byte[] data = Encoding.UTF8.GetBytes(content);
+        using (var aes = new AesManaged())
+        {
+            aes.Mode = CipherMode.CBC;
+            aes.KeySize = 128;
+            aes.BlockSize = 128;
+            aes.GenerateIV();
+            using (var pbkdf2 = new Rfc2898DeriveBytes(password, aes.IV, 100, HashAlgorithmName.SHA1))
+            {
+                aes.Key = pbkdf2.GetBytes(16);
+                using (var encryptor = aes.CreateEncryptor())
+                using (var msEncrypt = new MemoryStream())
+                {
+                    msEncrypt.Write(aes.IV, 0, aes.IV.Length);
+                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    using (var writer = new BinaryWriter(csEncrypt))
+                    {
+                        writer.Write(data);
+                    }
+                    return msEncrypt.ToArray();
+                }
+            }
+        }
+    }
     private static string Decrypt(RepoSave save, string password)
     {
         byte[] encryptedData = File.ReadAllBytes(save.saveDir.GetFiles().FirstOrDefault().FullName);
@@ -45,7 +71,7 @@ class SaveReader
                     byte[] decryptedData = reader.ReadBytes(encryptedData.Length);
                     decryptedData = Unpad(decryptedData);
 
-                    return System.Text.Encoding.UTF8.GetString(decryptedData);
+                    return Encoding.UTF8.GetString(decryptedData);
                 }
             }
         }
@@ -54,10 +80,8 @@ class SaveReader
     // removepadding
     private static byte[] Unpad(byte[] data)
     {
-        int index = Array.IndexOf(data, (byte)'{');
-        string jsonString = Encoding.UTF8.GetString(data, index, data.Length - index);
-        byte[] json = Encoding.UTF8.GetBytes(jsonString);
-        return json;
+        if (data.Length <= 16) return Array.Empty<byte>();
+        return data.Skip(16).ToArray();
     }
 
     public static RepoSaveInfo ReadSave(RepoSave save)
